@@ -1,3 +1,4 @@
-<php
-     phpinfo();
+<?php
+  echo "config<br>";
+phpinfo(); 
      ?>
