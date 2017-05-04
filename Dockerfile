@@ -1,20 +1,15 @@
-FROM ubuntu:12.04
+FROM nginx:1.11
+MAINTAINER Mark Shust <mark.shust@mageinferno.com>
 
-# Install dependencies
-RUN apt-get update -y
-RUN apt-get install -y git curl apache2 php5 libapache2-mod-php5 php5-mcrypt php5-mysql
+ENV PHP_HOST phpfpm
+ENV PHP_PORT 9000
+ENV APP_MAGE_MODE default
 
-# Install app
-RUN rm -rf /var/www/*
-ADD src /var/www
+COPY ./conf/nginx.conf /etc/nginx/
+COPY ./conf/default.conf /etc/nginx/conf.d/
+COPY ./bin/start.sh /usr/local/bin/start.sh
 
-# Configure apache
-RUN a2enmod rewrite
-RUN chown -R www-data:www-data /var/www
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_LOG_DIR /var/log/apache2
+WORKDIR /var/www/html
 
-EXPOSE 80
+CMD ["/usr/local/bin/start.sh"]
 
-CMD ["/usr/sbin/apache2", "-D",  "FOREGROUND"]
